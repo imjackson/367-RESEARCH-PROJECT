@@ -1,7 +1,7 @@
 ### CISC367-010
-###Group Members: Brianna Hunt, Debra Lymon, Jackson Pack
+### Group Members: Brianna Hunt, Debra Lymon, Jackson Pack
 ## concat_group_messages.py
-#### This program (provided by Dr.Pollock and modified by Debra Lymon) allows users to input a disentangled xml chat file and create a csv (which groups conversations by conversation ids and concatenates consecutive utterances from same speaker in a conversation (adds semicolon between concatenated utterances). 
+#### This program (provided by Dr.Pollock and modified by us) allows users to input a disentangled xml chat file and create a csv (which groups conversations by conversation ids and concatenates consecutive utterances from same speaker in a conversation (adds semicolon between concatenated utterances). 
 #### The output csv files of this program are in the 'original_xml_to_csv' folder.
 ## nltkanalysis.py
 #### This program allows users to input a csv file of Slack chat data to perform sentiment analysis on each thread using NLTK Vader.
