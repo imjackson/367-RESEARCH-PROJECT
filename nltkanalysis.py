@@ -1,5 +1,6 @@
 # CISC367-010
 # Group Members: Brianna Hunt, Debra Lymon, Jackson Pack
+# Programmed by Debra Lymon
 # This program takes in a csv file containing threads from Slack communities
 # The data is placed in a DataFrame using pandas for easier access/organization
 # The data is re-grouped by thread number in the DataFrame
@@ -15,19 +16,36 @@ import numpy as np
 from nltk.sentiment import SentimentIntensityAnalyzer
 #nltk.download()
 
-filepath = input("Enter csv filename: ") #include csv extension
+filepath = input("Enter csv filename: ") #make sure to include .csv extension
 og_data = pd.read_csv(filepath) #reading original csv data into a DataFrame
 data = (og_data.groupby('thread')).first() #indexed by thread number
 scores=[]
 thread_index = []
+labels=[]
+pos_scores=[]
 
 # Running NLTK Vader Sentiment Analyzer on each thread
 # returns
 def nltk_thread(data):
-    for ind in data.index: #data is indexed by thread
+    for ind in data.index: #data is indexed (grouped) by thread
         sia = SentimentIntensityAnalyzer()
         output = sia.polarity_scores(data.message[ind])
-        #print(output)
+        num1 = output.get('neg')
+        num2 = output.get('neu')
+        num3 = output.get('pos')
+        if (num1 > num2) and (num1 > num3): #compares neg, neu, pos scores and takes the largest value
+            largest = num1
+        elif (num2 > num1) and (num2 > num3):
+            largest = num2
+        else:
+            largest = num3
+
+        for key, value in output.items():
+            if largest == value:
+                largest_key = key #labels the thread by the largest score (neg,neu,or pos)
+
+        pos_scores.append(output.get('pos')) #store pos scores
+        labels.append(largest_key) #store thread label
         scores.append(output) #store score dictionaries in list
         thread_index.append(ind) #store thread num in list
 
@@ -38,12 +56,12 @@ def main():
     #write to csv file
     thread = thread_index
     positivity_score = scores
-    csv_data = [thread, positivity_score]
+    csv_data = [thread, positivity_score, labels, pos_scores]
     export_data=zip_longest(*csv_data, fillvalue = '')
     write_filepath = input("Enter file name you would like to save as: ") #Enter with .csv extension included
     with open(write_filepath, 'w', encoding="ISO-8859-1", newline='') as file:
         write = csv.writer(file)
-        write.writerow(("Thread", "Positivity Scores"))
+        write.writerow(("Thread", "Sentiment Scores", "Label", "Positive Score"))
         write.writerows(export_data)
 
 
