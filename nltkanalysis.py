@@ -30,22 +30,16 @@ def nltk_thread(data):
     for ind in data.index: #data is indexed (grouped) by thread
         sia = SentimentIntensityAnalyzer()
         output = sia.polarity_scores(data.message[ind])
-        num1 = output.get('neg')
-        num2 = output.get('neu')
-        num3 = output.get('pos')
-        if (num1 > num2) and (num1 > num3): #compares neg, neu, pos scores and takes the largest value
-            largest = num1
-        elif (num2 > num1) and (num2 > num3):
-            largest = num2
+        num1 = output.get('compound')
+        if num1 > 0: #if compound > 0, it is positive
+            largest = 'pos'
+        elif num1 < 0: #if compound < 0, it is negative
+            largest = 'neg'
         else:
-            largest = num3
-
-        for key, value in output.items():
-            if largest == value:
-                largest_key = key #labels the thread by the largest score (neg,neu,or pos)
+            largest = 'neu' #if compound = 0, it is neutral
 
         pos_scores.append(output.get('pos')) #store pos scores
-        labels.append(largest_key) #store thread label
+        labels.append(largest) #store thread label
         scores.append(output) #store score dictionaries in list
         thread_index.append(ind) #store thread num in list
 
